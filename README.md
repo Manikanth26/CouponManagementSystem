@@ -36,7 +36,7 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 ---
 
 ### 3. BXGY (Buy X Get Y) Coupon
-- Classic **Buy X, Get Y Free/Discounted** offer.  
+- Classic Buy X, Get Y Free/Discounted offer.  
 - Supports:
   - Multiple product IDs for "buy" and "get"
   - Configurable buy & get quantities
@@ -62,7 +62,7 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 ### 5. General Features
 - Create, update, delete, and fetch coupons.  
 - Apply coupon code to cart and get final price.  
-- Fetch all **applicable coupons** for a given cart.  
+- Fetch all applicable coupons for a given cart.  
 - Validation for:
   - Coupon active/inactive status
   - Validity dates
@@ -74,14 +74,14 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 ## Unimplemented Cases 🚫
 
 1. **Coupon Combinations / Stacking**  
-   - Currently, only **one coupon can be applied at a time**.  
+   - Currently, only one coupon can be applied at a time.  
    - Stacking multiple coupons requires conflict resolution logic (priority, exclusions).
 
 2. **User-Specific / First-Time User Coupons**  
    - No support for coupons restricted to specific users, groups, or order history.  
 
 3. **Usage Tracking Across Orders**  
-   - System does not track **global usage limits** (e.g., "first 100 users" or "max 5 times per customer").  
+   - System does not track global usage limits (e.g., "first 100 users" or "max 5 times per customer").  
 
 4. **Advanced Discount Rules**  
    - Tiered discounts (e.g., "10% off on ₹1000, 20% off on ₹5000") not implemented.  
@@ -100,8 +100,8 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 ## Assumptions 📝
 
 1. One coupon can be applied per cart.  
-2. All calculations assume a **single currency** (₹ in examples).  
-3. Coupons validated using **system server time** (`LocalDateTime.now()`).  
+2. All calculations assume a single currency.  
+3. Coupons validated using system server time (`LocalDateTime.now()`).  
 4. Cart DTO always includes items and shipping fee.  
 5. No user-specific restrictions are considered.  
 
