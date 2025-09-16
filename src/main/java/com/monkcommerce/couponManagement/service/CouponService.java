@@ -15,6 +15,7 @@ import com.monkcommerce.couponManagement.DTO.cartDTO.ApplyCouponResponse;
 import com.monkcommerce.couponManagement.DTO.cartDTO.CartDto;
 import com.monkcommerce.couponManagement.component.CouponDiscountCalculator;
 import com.monkcommerce.couponManagement.entity.*;
+import com.monkcommerce.couponManagement.enums.CouponType;
 import com.monkcommerce.couponManagement.exception.CouponAlreadyExistsException;
 import com.monkcommerce.couponManagement.exception.CouponNotFoundException;
 import com.monkcommerce.couponManagement.exception.InvalidCouponException;
@@ -143,8 +144,18 @@ public class CouponService {
                 .filter(Coupon::isActive)
                 .map(coupon -> {
                     try {
+                    	
+                    	if (coupon.getType() == CouponType.SHIPPING) {
+                            ShippingDetails details = objectMapper.convertValue(coupon.getDetails(), ShippingDetails.class);
+                            if (cart.getCartTotal() < details.getMinCartValueForFreeShipping()) {
+                                return null;
+                            }
+                        }
+                    	
                         double discount = discountCalculator.calculateDiscount(coupon, cart);
 
+                        if (discount <= 0) return null;
+                        
                         ApplicableCouponDto dto = new ApplicableCouponDto();
                         dto.setCouponId(coupon.getId());
                         dto.setCode(coupon.getCode());
