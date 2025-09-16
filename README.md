@@ -104,3 +104,272 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 3. Coupons validated using **system server time** (`LocalDateTime.now()`).  
 4. Cart DTO always includes items and shipping fee.  
 5. No user-specific restrictions are considered.  
+
+---
+
+# Requests & Responses
+
+## 1. Create Coupon  
+`POST /coupons`
+
+### Cart-wise Coupon  
+**Request**
+```json
+{
+  "code": "SAVE10",
+  "type": "CART_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "details": {
+    "minCartValue": 500,
+    "discountPercent": 10,
+    "flatDiscount": 0,
+    "maxDiscountCap": 200,
+    "minItemsRequired": 2
+  }
+}
+```
+**Response**
+```json
+{
+  "id": 1,
+  "code": "SAVE10",
+  "type": "CART_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+### Product-wise Coupon
+**Request**
+```json
+{
+  "code": "PROD50",
+  "type": "PRODUCT_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "details": {
+    "productId": 101,
+    "discountPercent": 20,
+    "flatDiscount": 0,
+    "minQuantity": 2,
+    "maxUsagePerProduct": 5
+  }
+}
+```
+**Response**
+```json
+{
+  "id": 2,
+  "code": "PROD50",
+  "type": "PRODUCT_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+
+### BXGY Coupon
+**Request**
+```json
+{
+  "code": "BUY2GET1",
+  "type": "BXGY",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "details": {
+    "buyProductIds": [101],
+    "buyQuantity": 2,
+    "getProductIds": [202],
+    "getQuantity": 1,
+    "repetitionLimit": 2
+  }
+}
+```
+**Response**
+```json
+{
+  "id": 3,
+  "code": "BUY2GET1",
+  "type": "BXGY",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+### Shipping Coupon
+**Request**
+```json
+{
+  "code": "FREESHIP",
+  "type": "SHIPPING",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "details": {
+    "minCartValueForFreeShipping": 1000,
+    "flatDiscountOnShipping": 50,
+    "freeShipping": true
+  }
+}
+```
+**Response**
+```json
+{
+  "id": 4,
+  "code": "FREESHIP",
+  "type": "SHIPPING",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+
+---
+
+## 2. Get All Coupons 
+`GET /coupons`
+
+**Response**
+```json
+[
+  {
+    "id": 1,
+    "code": "SAVE10",
+    "type": "CART_WISE",
+    "validFrom": "2025-09-01T00:00:00",
+    "validTo": "2025-09-30T23:59:59",
+    "active": true,
+    "details": { ... }
+  },
+  {
+    "id": 2,
+    "code": "PROD50",
+    "type": "PRODUCT_WISE",
+    "validFrom": "2025-09-01T00:00:00",
+    "validTo": "2025-09-30T23:59:59",
+    "active": true,
+    "details": { ... }
+  }
+]
+```
+
+---
+
+## 3. Get Coupon by ID
+`GET /coupons/{id}`
+
+**Response**
+```json
+{
+  "id": 1,
+  "code": "SAVE10",
+  "type": "CART_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-09-30T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+
+---
+
+## 4. Update Coupon
+`PUT /coupons/{id}`
+
+**Request**
+```json
+{
+  "code": "SAVE20",
+  "type": "CART_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-10-01T23:59:59",
+  "details": { ... }
+}
+```
+**Response**
+```json
+{
+  "id": 1,
+  "code": "SAVE20",
+  "type": "CART_WISE",
+  "validFrom": "2025-09-01T00:00:00",
+  "validTo": "2025-10-01T23:59:59",
+  "active": true,
+  "details": { ... }
+}
+```
+
+---
+
+## 5. Delete Coupon
+`DELETE /coupons/{id}`
+
+**Response**
+`204 No Content`
+
+---
+
+## 6. Apply Coupon to Cart
+`POST /coupons/apply-coupon/{code}`
+
+**Request**
+```json
+{
+  "items": [
+    { "productId": 101, "price": 300, "quantity": 2 },
+    { "productId": 202, "price": 400, "quantity": 1 }
+  ],
+  "shippingFee": 50
+}
+```
+
+**Response**
+```json
+{
+  "couponCode": "SAVE10",
+  "originalTotal": 1000,
+  "shippingFee": 50,
+  "discount": 100,
+  "finalTotal": 950
+}
+```
+
+---
+
+## 7. Get Applicable Coupons
+`POST /coupons/applicable-coupons`
+
+**Request**
+```json
+{
+  "items": [
+    { "productId": 101, "price": 300, "quantity": 2 },
+    { "productId": 202, "price": 400, "quantity": 1 }
+  ],
+  "shippingFee": 50
+}
+```
+
+**Response**
+```json
+[
+  {
+    "couponId": 1,
+    "code": "SAVE10",
+    "type": "CART_WISE",
+    "discount": 100,
+    "finalPrice": 950
+  },
+  {
+    "couponId": 2,
+    "code": "PROD50",
+    "type": "PRODUCT_WISE",
+    "discount": 60,
+    "finalPrice": 990
+  }
+]
+```
