@@ -93,8 +93,7 @@ It supports **cart-wise, product-wise, BXGY (Buy X Get Y), and shipping-related 
 1. Relies on valid DTOs from client (minimal validation).  
 2. No coupon stacking support.  
 3. No audit logs for coupon creation/usage.  
-4. Concurrency issues may arise for high-volume coupon usage.  
-5. Error handling is basic (common cases only).  
+4. Concurrency issues may arise for high-volume coupon usage.
 
 ---
 
